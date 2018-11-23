@@ -67,6 +67,28 @@ Resources:
       TableName: !Sub ${AWS::StackName}-tableCE5FE669
     Metadata:
       StackeryName: product
+  functionAE660302:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-functionAE660302
+      Description: !Sub
+        - Stack ${StackTagName} Environment ${EnvironmentTagName} Function ${ResourceName}
+        - ResourceName: functionAE660302
+      CodeUri: src/functionAE660302
+      Handler: index.handler
+      Runtime: nodejs8.10
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - AWSXrayWriteOnlyAccess
+      Events:
+        tableCE5FE669:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt tableCE5FE669.StreamArn
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
 Parameters:
   StackTagName:
     Type: String
